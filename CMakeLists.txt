@@ -39,7 +39,7 @@ install(DIRECTORY launch/
 ## run sudo command to enable direct network access
 ## disabled here by default because it is set by Debian postinst command
 
-OPTION(USE_SETCAP "Set permissions to access ethernet interface without sudo" OFF)
+OPTION(USE_SETCAP "Set permissions to access ethernet interface without sudo" ON)
 
 SET(SUDO_COMMAND gksudo)
 IF($ENV{USE_NORMAL_SUDO})
