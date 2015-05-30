@@ -2,3 +2,6 @@
 .autotools
 .cproject
 .project
+
+# temporary files
+*~
