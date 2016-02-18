@@ -282,6 +282,8 @@ private:
     bool areBaseMotorsSwitchedOn;
     bool areArmMotorsSwitchedOn;
 
+    std::vector<youbot::JointAngleSetpoint> desiredTrajectoryGoal;
+
     ros::Time last_gripper_readings_time_;
 };
 
