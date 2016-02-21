@@ -73,6 +73,8 @@ node(n)
     diagnosticArrayPublisher = n.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 
     last_gripper_readings_time_ = ros::Time::now();
+
+    desiredTrajectoryGoal.resize(youBotArmDoF);
 }
 
 YouBotOODLWrapper::~YouBotOODLWrapper()
@@ -583,6 +585,7 @@ void YouBotOODLWrapper::armJointTrajectoryGoalCallback(actionlib::ActionServer<c
         }
     
         for (int j = 0; j < youBotArmDoF; j++) {
+            desiredTrajectoryGoal[j].angle = point.positions[j]*radian;
             segment.positions = point.positions[j]*radian;
             segment.velocities = point.velocities[j]*radian_per_second;
             segment.accelerations = point.accelerations[j] * radian_per_second/second;
@@ -621,7 +624,7 @@ void YouBotOODLWrapper::armJointTrajectoryGoalCallback(actionlib::ActionServer<c
         try {
             // youBot joints start with 1 not with 0 -> i + 1
             youBotConfiguration.youBotArmConfigurations[armIndex].youBotArm->getArmJoint(i + 1).trajectoryController.setTrajectory(jointTrajectories[i]);
-      ROS_INFO("set trajectories %d", i);
+            ROS_INFO("set trajectories %d", i);
         } catch (std::exception& e) {
             std::string errorMessage = e.what();
             ROS_WARN("Cannot set trajectory for joint %i: %s", i + 1, errorMessage.c_str());
@@ -887,6 +890,25 @@ void YouBotOODLWrapper::computeOODLSensorReadings()
                 armHasActiveJointTrajectoryGoal = false;
                 control_msgs::FollowJointTrajectoryResult trajectoryResult;
                 trajectoryResult.error_code = trajectoryResult.SUCCESSFUL;
+
+                // Send the last trajectory point using joint position controller to ensure that joints accurately reach goal position.
+                youbot::EthercatMaster::getInstance().AutomaticSendOn(false); // ensure that all joint values will be send at the same time
+                
+                for (int i = 0; i < youBotArmDoF; ++i)
+                {
+                    // set the desired joint value 
+                    try
+                    {
+                        youBotConfiguration.youBotArmConfigurations[armIndex].youBotArm->getArmJoint(i + 1).setData(desiredTrajectoryGoal[i].angle); //youBot joints start with 1 not with 0 -> i + 1
+                    }
+                    catch (std::exception& e)
+                    {
+                        std::string errorMessage = e.what();
+                        ROS_WARN("Cannot set arm joint %i: %s", i + 1, errorMessage.c_str());
+                    }
+                }
+                youbot::EthercatMaster::getInstance().AutomaticSendOn(true); // ensure that all joint values will be send at the same time
+                
                 armActiveJointTrajectoryGoal.setSucceeded(trajectoryResult, "trajectory successful");
                 // ROS_INFO("trajectory successful");
                 // myTrace->stopTrace();
