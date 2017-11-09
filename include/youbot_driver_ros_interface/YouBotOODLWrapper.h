@@ -49,6 +49,7 @@
 
 /* ROS includes */
 #include "geometry_msgs/Twist.h"
+#include "velocity_msgs/WheelVelocity.h"      /* include velocity_msgs */
 #include "tf/transform_broadcaster.h"
 #include "nav_msgs/Odometry.h"
 #include "std_srvs/Empty.h"
@@ -124,6 +125,12 @@ public:
      * @param youbotBaseCommand Message that contains the desired translational and rotational velocity for the base.
      */
     void baseCommandCallback(const geometry_msgs::Twist& youbotBaseCommand);
+    
+    /**
+     * @brief Callback that is executed when a commend for the wheels comes in.
+     * @param youbotWheelCommand Message that contains the desired velocities for the wheels.
+     */
+    void wheelVelocityCallback(const velocity_msgs::WheelVelocity& youbotWheelVelocity);
 
     /**
      * @deprecated
@@ -278,6 +285,9 @@ private:
     diagnostic_msgs::DiagnosticStatus diagnosticStatusMessage;
     std::string diagnosticNameArm;
     std::string diagnosticNameBase;
+
+    /// subscribe to velocity_msgs
+    ros::Subscriber wheelVelocitySubscriber;
 
     bool areBaseMotorsSwitchedOn;
     bool areArmMotorsSwitchedOn;

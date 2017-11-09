@@ -103,6 +103,7 @@ void YouBotOODLWrapper::initializeBase(std::string baseName)
 
     /* setup input/output communication */
     youBotConfiguration.baseConfiguration.baseCommandSubscriber = node.subscribe("cmd_vel", 1000, &YouBotOODLWrapper::baseCommandCallback, this);
+    youBotConfiguration.baseConfiguration.wheelVelocitySubscriber = node.subscribe("wheel_vel", 1000, &YouBotOODLWrapper::wheelVelocityCallback, this);
     youBotConfiguration.baseConfiguration.baseOdometryPublisher = node.advertise<nav_msgs::Odometry > ("odom", 1);
     youBotConfiguration.baseConfiguration.baseJointStatePublisher = node.advertise<sensor_msgs::JointState > ("base/joint_states", 1);
 
@@ -298,6 +299,7 @@ void YouBotOODLWrapper::stop()
     }
 
     youBotConfiguration.baseConfiguration.baseCommandSubscriber.shutdown();
+    youBotConfiguration.baseConfiguration.wheelVelocitySubscriber.shutdown();
     youBotConfiguration.baseConfiguration.baseJointStatePublisher.shutdown();
     youBotConfiguration.baseConfiguration.baseOdometryPublisher.shutdown();
     youBotConfiguration.baseConfiguration.switchONMotorsService.shutdown();
@@ -371,6 +373,39 @@ void YouBotOODLWrapper::baseCommandCallback(const geometry_msgs::Twist& youbotBa
         {
             std::string errorMessage = e.what();
             ROS_WARN("Cannot set base velocities: %s", errorMessage.c_str());
+        }
+
+    }
+    else
+    {
+        ROS_ERROR("No base initialized!");
+    }
+}
+
+/* WHEEL SPEED*/
+void YouBotOODLWrapper::wheelVelocityCallback(const velocity_msgs::WheelVelocity& youbotWheelVelocity)
+{
+
+    if (youBotConfiguration.hasBase)
+    { // in case stop has been invoked
+        quantity<si::angular_velocity> wheel1Velocity;
+        quantity<si::angular_velocity> wheel2Velocity;
+        quantity<si::angular_velocity> wheel3Velocity;
+        quantity<si::angular_velocity> wheel4Velocity;
+
+        wheel1Velocity = youbotWheelVelocity.wheel1_velocity;
+        wheel2Velocity = youbotWheelVelocity.wheel2_velocity;
+        wheel3Velocity = youbotWheelVelocity.wheel3_velocity;
+        wheel4Velocity = youbotWheelVelocity.wheel4_velocity;
+
+        try
+        {
+            youBotConfiguration.baseConfiguration.youBotBase->setWheelVelocity(wheel1Velocity, wheel2Velocity, wheel3Velocity, wheel4Velocity);
+        }
+        catch (std::exception& e)
+        {
+            std::string errorMessage = e.what();
+            ROS_WARN("Cannot set wheel velocities: %s", errorMessage.c_str());
         }
 
     }

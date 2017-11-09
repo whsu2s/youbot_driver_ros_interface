@@ -81,6 +81,8 @@ public:
     /// Receives Twist messages for the base.
     ros::Subscriber baseCommandSubscriber;
 
+    /// Receives WhellVelocity messages for the wheels.
+    ros::Subscriber wheelVelocitySubscriber;
 
     /// Publishes Odometry messages
     ros::Publisher baseOdometryPublisher;
