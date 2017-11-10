@@ -383,7 +383,7 @@ void YouBotOODLWrapper::baseCommandCallback(const geometry_msgs::Twist& youbotBa
 }
 
 /* WHEEL SPEED*/
-void YouBotOODLWrapper::wheelVelocityCallback(const velocity_msgs::WheelVelocity& youbotWheelVelocity)
+void YouBotOODLWrapper::wheelVelocityCallback(const custom_msgs::WheelVelocity& youbotWheelVelocity)
 {
 
     if (youBotConfiguration.hasBase)
@@ -393,10 +393,10 @@ void YouBotOODLWrapper::wheelVelocityCallback(const velocity_msgs::WheelVelocity
         quantity<si::angular_velocity> wheel3Velocity;
         quantity<si::angular_velocity> wheel4Velocity;
 
-        wheel1Velocity = youbotWheelVelocity.wheel1_velocity;
-        wheel2Velocity = youbotWheelVelocity.wheel2_velocity;
-        wheel3Velocity = youbotWheelVelocity.wheel3_velocity;
-        wheel4Velocity = youbotWheelVelocity.wheel4_velocity;
+        wheel1Velocity = youbotWheelVelocity.wheel1_velocity * radian_per_second;
+        wheel2Velocity = youbotWheelVelocity.wheel2_velocity * radian_per_second;
+        wheel3Velocity = youbotWheelVelocity.wheel3_velocity * radian_per_second;
+        wheel4Velocity = youbotWheelVelocity.wheel4_velocity * radian_per_second;
 
         try
         {
