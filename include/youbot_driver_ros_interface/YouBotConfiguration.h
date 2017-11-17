@@ -84,6 +84,9 @@ public:
     /// Receives WhellVelocity messages for the wheels.
     ros::Subscriber wheelVelocitySubscriber;
 
+    /// Receives Joy messages.
+    ros::Subscriber JoySubscriber;
+
     /// Publishes Odometry messages
     ros::Publisher baseOdometryPublisher;
 

@@ -104,6 +104,7 @@ void YouBotOODLWrapper::initializeBase(std::string baseName)
     /* setup input/output communication */
     youBotConfiguration.baseConfiguration.baseCommandSubscriber = node.subscribe("cmd_vel", 1000, &YouBotOODLWrapper::baseCommandCallback, this);
     youBotConfiguration.baseConfiguration.wheelVelocitySubscriber = node.subscribe("wheel_vel", 1000, &YouBotOODLWrapper::wheelVelocityCallback, this);
+    youBotConfiguration.baseConfiguration.JoySubscriber = node.subscribe("joy", 1000, &YouBotOODLWrapper::joyCallback, this);
     youBotConfiguration.baseConfiguration.baseOdometryPublisher = node.advertise<nav_msgs::Odometry > ("odom", 1);
     youBotConfiguration.baseConfiguration.baseJointStatePublisher = node.advertise<sensor_msgs::JointState > ("base/joint_states", 1);
 
@@ -413,6 +414,13 @@ void YouBotOODLWrapper::wheelVelocityCallback(const custom_msgs::WheelVelocity& 
     {
         ROS_ERROR("No base initialized!");
     }
+}
+
+/* JOY*/
+void YouBotOODLWrapper::joyCallback(const sensor_msgs::Joy& joyCommand)
+{
+
+    
 }
 
 void YouBotOODLWrapper::armPositionsCommandCallback(const brics_actuator::JointPositionsConstPtr& youbotArmCommand, int armIndex)

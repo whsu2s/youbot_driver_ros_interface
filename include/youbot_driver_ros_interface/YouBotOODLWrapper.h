@@ -60,6 +60,7 @@
 
 #include "trajectory_msgs/JointTrajectory.h"
 #include "sensor_msgs/JointState.h"
+#include "sensor_msgs/Joy.h"
 
 #include "brics_actuator/JointPositions.h"
 #include "brics_actuator/JointVelocities.h"
@@ -131,6 +132,12 @@ public:
      * @param youbotWheelCommand Message that contains the desired velocities for the wheels.
      */
     void wheelVelocityCallback(const custom_msgs::WheelVelocity& youbotWheelVelocity);
+
+    /**
+     * @brief Callback that is executed when a joystick command comes in.
+     * @param joy Message that contains the stop command for the wheels.
+     */
+    void joyCallback(const sensor_msgs::Joy& joyCommand);
 
     /**
      * @deprecated
