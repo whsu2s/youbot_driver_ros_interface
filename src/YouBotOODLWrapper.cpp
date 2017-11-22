@@ -419,6 +419,34 @@ void YouBotOODLWrapper::wheelVelocityCallback(const custom_msgs::WheelVelocity& 
 /* JOY*/
 void YouBotOODLWrapper::joyCallback(const sensor_msgs::Joy& joyCommand)
 {
+    int b_button = joyCommand.buttons[2];
+    if (b_button == 1)
+    { // in case stop has been invoked
+        quantity<si::angular_velocity> wheel1Velocity;
+        quantity<si::angular_velocity> wheel2Velocity;
+        quantity<si::angular_velocity> wheel3Velocity;
+        quantity<si::angular_velocity> wheel4Velocity;
+
+        wheel1Velocity = 0 * radian_per_second;
+        wheel2Velocity = 0 * radian_per_second;
+        wheel3Velocity = 0 * radian_per_second;
+        wheel4Velocity = 0 * radian_per_second;
+
+        try
+        {
+            youBotConfiguration.baseConfiguration.youBotBase->setWheelVelocity(wheel1Velocity, wheel2Velocity, wheel3Velocity, wheel4Velocity);
+        }
+        catch (std::exception& e)
+        {
+            std::string errorMessage = e.what();
+            ROS_WARN("Cannot stop wheels: %s", errorMessage.c_str());
+        }
+
+    }
+    else
+    {
+        ROS_ERROR("No button detected!");
+    }
 
     
 }
