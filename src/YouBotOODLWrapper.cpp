@@ -419,7 +419,7 @@ void YouBotOODLWrapper::wheelVelocityCallback(const custom_msgs::WheelVelocity& 
 /* JOY*/
 void YouBotOODLWrapper::joyCallback(const sensor_msgs::Joy& joyCommand)
 {
-    int b_button = joyCommand.buttons[2];
+    int b_button = joyCommand.buttons[5];
     if (b_button == 1)
     { // in case stop has been invoked
         quantity<si::angular_velocity> wheel1Velocity;
@@ -442,10 +442,6 @@ void YouBotOODLWrapper::joyCallback(const sensor_msgs::Joy& joyCommand)
             ROS_WARN("Cannot stop wheels: %s", errorMessage.c_str());
         }
 
-    }
-    else
-    {
-        ROS_ERROR("No button detected!");
     }
 
     
